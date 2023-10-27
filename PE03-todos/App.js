@@ -12,31 +12,32 @@ const App = () => {
   const [task, setTask] = useState("");
   const [tasks, setTasks] = useState([]);
   const [editIndex, setEditIndex] = useState(-1);
+  const [currentFilter, setCurrentFilter] = useState("ALL");
 
   const handleAddTask = () => {
     if (task) {
       if (editIndex !== -1) {
-        // Edit existing task
         const updatedTasks = [...tasks];
-        updatedTasks[editIndex] = task;
+        updatedTasks[editIndex] = { text: task, completed: tasks[editIndex].completed };
         setTasks(updatedTasks);
         setEditIndex(-1);
       } else {
-        // Add new task
-        setTasks([...tasks, task]);
+        setTasks([...tasks, { text: task, completed: false }]);
       }
       setTask("");
     }
   };
 
   const handleEditTask = (index) => {
-    const taskToEdit = tasks[index];
+    const taskToEdit = tasks[index].text;
     setTask(taskToEdit);
     setEditIndex(index);
   };
 
   const handleDoneTask = (index) => {
-    // You can implement your "Done" functionality here
+    const updatedTasks = [...tasks];
+    updatedTasks[index].completed = true;
+    setTasks(updatedTasks);
   };
 
   const handleDeleteTask = (index) => {
@@ -45,18 +46,29 @@ const App = () => {
     setTasks(updatedTasks);
   };
 
+  const getFilteredTasks = () => {
+    if (currentFilter === "ACTIVE") {
+      return tasks.filter((task) => !task.completed);
+    } else if (currentFilter === "COMPLETED") {
+      return tasks.filter((task) => task.completed);
+    }
+    return tasks;
+  };
+
   const renderItem = ({ item, index }) => (
     <View style={styles.task}>
-      <Text style={styles.itemList}>{item}</Text>
+      <Text style={item.completed ? styles.completedTask : styles.itemList}>
+        {item.text}
+      </Text>
       <View style={styles.taskButtons}>
         <TouchableOpacity onPress={() => handleDoneTask(index)}>
           <Text style={styles.doneButton}>Done</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleEditTask(index)}>
-          <Text style={styles.editButton}>Edit</Text>
+          <Text style={styles.editButton}> Edit </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleDeleteTask(index)}>
-          <Text style={styles.deleteButton}>Delete</Text>
+          <Text style={styles.deleteButton}> Delete </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -64,6 +76,7 @@ const App = () => {
 
   return (
     <View style={styles.container}>
+      
       <Text style={styles.heading}>CS624</Text>
       <Text style={styles.title}>ToDo App</Text>
       <TextInput
@@ -78,21 +91,43 @@ const App = () => {
         </Text>
       </TouchableOpacity>
       <FlatList
-        data={tasks}
+        data={getFilteredTasks()}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
+        style={styles.tasksList}
       />
 
-      {/* Bottom Bar */}
       <View style={styles.bottomBar}>
-        <TouchableOpacity>
-          <Text style={styles.bottomBarButton}>ALL</Text>
+        <TouchableOpacity onPress={() => setCurrentFilter("ALL")}>
+          <Text
+            style={
+              currentFilter === "ALL" ? styles.activeButton : styles.bottomBarButton
+            }
+          >
+            ALL
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.bottomBarButton}>ACTIVE</Text>
+        <TouchableOpacity onPress={() => setCurrentFilter("ACTIVE")}>
+          <Text
+            style={
+              currentFilter === "ACTIVE"
+                ? styles.activeButton
+                : styles.bottomBarButton
+            }
+          >
+            ACTIVE
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.bottomBarButton}>COMPLETED</Text>
+        <TouchableOpacity onPress={() => setCurrentFilter("COMPLETED")}>
+          <Text
+            style={
+              currentFilter === "COMPLETED"
+                ? styles.activeButton
+                : styles.bottomBarButton
+            }
+          >
+            COMPLETED
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -100,84 +135,98 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    padding: 40, 
-    marginTop: 40, 
-}, 
-title: { 
-    fontSize: 24, 
-    fontWeight: "bold", 
-    marginBottom: 20, 
-}, 
-heading: { 
-    fontSize: 30, 
-    fontWeight: "bold", 
-    marginBottom: 7, 
-    color: "green", 
-}, 
-input: { 
-    borderWidth: 3, 
-    borderColor: "#ccc", 
-    padding: 10, 
-    marginBottom: 10, 
-    borderRadius: 10, 
-    fontSize: 18, 
-}, 
-addButton: { 
-    backgroundColor: "green", 
-    padding: 10, 
-    borderRadius: 5, 
-    marginBottom: 10, 
-}, 
-addButtonText: { 
-    color: "white", 
-    fontWeight: "bold", 
-    textAlign: "center", 
-    fontSize: 18, 
-}, 
-task: { 
-    flexDirection: "row", 
-    justifyContent: "space-between", 
-    alignItems: "center", 
-    marginBottom: 15, 
-    fontSize: 18, 
-}, 
-itemList: { 
-    fontSize: 19, 
-}, 
-taskButtons: { 
-    flexDirection: "row", 
-}, 
-editButton: { 
-    marginRight: 10, 
-    color: "green", 
-    fontWeight: "bold", 
-    fontSize: 18, 
-}, 
-deleteButton: { 
-    color: "red", 
-    fontWeight: "bold", 
+  container: {
+    flex: 1,
+    padding: 30,
+    backgroundColor: "#f5f5f5",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#333",
+  },
+  heading: {
+    fontSize: 30,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "green",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 10,
     fontSize: 18,
-},
-doneButton: {
-  marginRight: 20,
-  color: "green",
-  fontWeight: "bold",
-  fontSize: 18,
-},
-
-  // Add styles for the bottom bar
-  bottomBar: {
+  },
+  addButton: {
+    backgroundColor: "green",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  addButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 18,
+  },
+  tasksList: {
+    flex: 1,
+    marginTop: 20,
+  },
+  task: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "lightgray",
+    marginBottom: 15,
+  },
+  itemList: {
+    fontSize: 18,
+    color: "#333",
+  },
+  completedTask: {
+    fontSize: 18,
+    color: "#888",
+    textDecorationLine: "line-through",
+  },
+  taskButtons: {
+    flexDirection: "row",
+  },
+  editButton: {
+    color: "green",
+    fontWeight: "bold",
+    fontSize: 16,
+    marginLeft: 10,
+  },
+  deleteButton: {
+    color: "red",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  doneButton: {
+    color: "green",
+    fontWeight: "bold",
+    fontSize: 16,
+    marginRight: 10,
+  },
+  bottomBar: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "#eee",
     padding: 10,
   },
   bottomBarButton: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
+    color: "#333",
+  },
+  activeButton: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "green",
   },
 });
 
