@@ -43,13 +43,10 @@ class App extends Component {
             inputValue={inputValue}
             inputChange={text => this.inputChange(text)}
           />
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
           <Button
-            title="Submit"
-            onPress={() => this.addTodo()}
-            style={{ backgroundColor: 'white' }}
+            title="Add Todo"
+            onPress={() => this.addTodo()} 
           />
-        </View>
           {todos.map((todo, index) => (
             <TodoItem key={index} text={todo} /> 
           ))}
