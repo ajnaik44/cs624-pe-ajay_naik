@@ -9,13 +9,13 @@ export default class App extends Component {
           <View style={styles.cardImageContainer}>
             <Image
               style={styles.cardImage}
-              source={require('./assets/icons8-user-50.png')}
+              source={require('./assets/user.png')}
             />
           </View>
-          <Text style={styles.name}>Alessandro Loi</Text>
+          <Text style={styles.name}>Ajay Naik</Text>
             <Text style={styles.jobTitle}>React Native Developer</Text>
             <Text style={styles.description}>
-              Alessandro is a really great JavasScript developer. 
+              Ajay is a really great JavasScript developer. 
               He loves using KS to build React Native applications for iOS and Android.
             </Text>
         </View>
