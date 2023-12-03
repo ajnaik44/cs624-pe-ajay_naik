@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   country: {
-    color: 'rgba(0, 0, 0, .5)',
+    color: 'rgba(0, 0, 0, .25)',
   },
   addButtonContainer: {
     marginRight: 10,

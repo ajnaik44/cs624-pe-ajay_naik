@@ -3,8 +3,9 @@ import React from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 
 const citiesData = [
-  { id: 1, name: 'Banglore' },
-  { id: 2, name: 'Pune' },
+  { id: 1, name: 'Mumbai' },
+  { id: 2, name: 'Nagpur' },
+  { id: 3, name: 'Amravati' },
   // Add more cities as needed
 ];
 

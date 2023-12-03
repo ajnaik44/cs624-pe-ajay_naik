@@ -9,7 +9,7 @@ const AddCountry = ({ navigation }) => {
   const handleAddCountry = () => {
     // Perform any necessary logic to add the country
     // You can also navigate to the next screen here if needed
-    navigation.navigate('CountryDetails', {
+    navigation.navigate('CityDetails', {
       countryName,
       currencyName,
     });
